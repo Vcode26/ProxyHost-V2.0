@@ -1,0 +1,30 @@
+# Wrangler configuration for VBI ProxyHost
+
+name = "vbi-proxyhost"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# KV namespace for user data, files, and sessions
+kv_namespaces = [
+  { binding = "VBI_KV", id = "your-kv-namespace-id", preview_id = "your-preview-kv-id" }
+]
+
+# R2 bucket for large file storage (optional)
+# r2_buckets = [
+#   { binding = "VBI_STORAGE", bucket_name = "vbi-proxyhost-files" }
+# ]
+
+# Environment variables
+[env.production.vars]
+ENVIRONMENT = "production"
+DOMAIN = "vbiproxyhost.com"
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+DOMAIN = "staging.vbiproxyhost.com"
+
+# Route configuration - update with your domain
+routes = [
+  { pattern = "vbiproxyhost.com/*", zone_name = "vbiproxyhost.com" },
+  { pattern = "*.vbiproxyhost.com/*", zone_name = "vbiproxyhost.com" }
+]

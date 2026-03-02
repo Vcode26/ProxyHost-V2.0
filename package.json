@@ -1,0 +1,23 @@
+{
+  "name": "vbi-proxyhost",
+  "version": "1.0.0",
+  "description": "VBI ProxyHost - Free static website hosting service using Cloudflare Workers",
+  "main": "worker.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "cloudflare",
+    "workers",
+    "hosting",
+    "proxy",
+    "static-site"
+  ],
+  "author": "VBI ProxyHost",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
