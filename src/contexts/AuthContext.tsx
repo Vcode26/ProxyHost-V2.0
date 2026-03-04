@@ -73,24 +73,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, username: string) => {
-    const { data, error } = await supabase.auth.signUp({
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          username: username.toLowerCase(),
+        },
+      },
     });
 
-    if (error) throw error;
-    if (!data.user) throw new Error('Failed to create user');
+    if (authError) throw authError;
+    if (!authData.user) throw new Error('Failed to create user');
 
     const { error: profileError } = await supabase
       .from('users')
       .insert({
-        id: data.user.id,
+        id: authData.user.id,
         username: username.toLowerCase(),
         email,
       });
 
-    if (profileError) throw profileError;
+    if (profileError) {
+      if (profileError.code === '23505') {
+        throw new Error('Username already taken');
+      }
+      throw profileError;
+    }
 
+    setSession(authData.session);
     await refreshUser();
   };
 

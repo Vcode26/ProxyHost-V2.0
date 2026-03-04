@@ -21,8 +21,13 @@ export default function Register() {
     e.preventDefault();
     setError('');
 
+    if (!email || !email.includes('@')) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
     if (!validateUsername(username)) {
-      setError('Username must be at least 3 characters, start and end with alphanumeric characters, and contain only lowercase letters, numbers, and hyphens');
+      setError('Username must be 3+ characters, alphanumeric/hyphens only, starting and ending with a letter or number');
       return;
     }
 
@@ -37,7 +42,14 @@ export default function Register() {
       await signUp(email, password, username);
       navigate('/dashboard');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to create account');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create account';
+      if (errorMessage.includes('already exists')) {
+        setError('Email already registered. Please login instead.');
+      } else if (errorMessage.includes('already taken')) {
+        setError('Username already taken. Please choose another.');
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }

@@ -5,7 +5,7 @@ import { supabase, HostedFile } from '../lib/supabase';
 import { Server, Upload, File, Trash2, LogOut, Globe, HardDrive, AlertCircle } from 'lucide-react';
 
 export default function Dashboard() {
-  const { user, signOut, refreshUser } = useAuth();
+  const { user, loading: authLoading, signOut, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [files, setFiles] = useState<HostedFile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -14,12 +14,13 @@ export default function Dashboard() {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
+    if (authLoading) return;
     if (!user) {
       navigate('/login');
       return;
     }
     loadFiles();
-  }, [user, navigate]);
+  }, [user, authLoading, navigate]);
 
   const loadFiles = async () => {
     try {
@@ -141,6 +142,14 @@ export default function Dashboard() {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <p className="text-slate-600">Loading...</p>
+      </div>
+    );
+  }
 
   if (!user) return null;
 

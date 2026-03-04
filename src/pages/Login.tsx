@@ -20,7 +20,12 @@ export default function Login() {
       await signIn(email, password);
       navigate('/dashboard');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to login');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to login';
+      if (errorMessage.includes('Invalid login credentials') || errorMessage.includes('not found')) {
+        setError('Invalid email or password');
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
